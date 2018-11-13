@@ -1,0 +1,81 @@
+
+thread t1
+end t1;
+
+thread implementation t1.Impl
+	properties
+		Dispatch_Protocol => Periodic;
+		Cheddar_Properties::Context_Switch_Overhead =>  0 ms ;
+		Source_Code_Size =>  0 kb ;
+		Source_Stack_Size =>  0 kb ;
+		Compute_Execution_Time =>  41 ms ..  41 ms;
+		Cheddar_Properties::Dispatch_Absolute_Time =>  0 ms ;
+		Cheddar_Properties::POSIX_Scheduling_Policy => SCHED_FIFO;
+		Cheddar_Properties::Fixed_Priority =>  2;
+		Cheddar_Properties::Bound_On_Data_Blocking_Time =>  0 ms ;
+		Deadline  =>  100 ms ;
+		Cheddar_Properties::Criticality  =>  0;
+		Period =>  100 ms ;
+		Cheddar_Properties::Dispatch_Jitter =>  0 ms ;
+end t1.Impl;
+
+thread t2
+end t2;
+
+thread implementation t2.Impl
+	properties
+		Dispatch_Protocol => Periodic;
+		Cheddar_Properties::Context_Switch_Overhead =>  0 ms ;
+		Source_Code_Size =>  0 kb ;
+		Source_Stack_Size =>  0 kb ;
+		Compute_Execution_Time =>  58 ms ..  58 ms;
+		Cheddar_Properties::Dispatch_Absolute_Time =>  0 ms ;
+		Cheddar_Properties::POSIX_Scheduling_Policy => SCHED_FIFO;
+		Cheddar_Properties::Fixed_Priority =>  1;
+		Cheddar_Properties::Bound_On_Data_Blocking_Time =>  0 ms ;
+		Deadline  =>  141 ms ;
+		Cheddar_Properties::Criticality  =>  0;
+		Period =>  141 ms ;
+		Cheddar_Properties::Dispatch_Jitter =>  0 ms ;
+end t2.Impl;
+
+process ea
+end ea;
+
+process implementation ea.Impl
+	subcomponents
+		instancied_t1 : thread t1.Impl;
+		instancied_t2 : thread t2.Impl;
+	properties
+		Cheddar_Properties::Source_Global_Text_Size =>  0 kb ;
+		Cheddar_Properties::Source_Global_Data_Size =>  0 kb ;
+		Cheddar_Properties::Source_Global_Heap_Size =>  0 kb ;
+		Cheddar_Properties::Source_Global_Stack_Size =>  0 kb ;
+end ea.Impl;
+
+processor cpu1
+end cpu1;
+
+processor implementation cpu1.Impl
+	properties 
+		Scheduling_Protocol => POSIX_1003_HIGHEST_PRIORITY_FIRST_PROTOCOL;
+		Cheddar_Properties::Scheduler_Quantum =>  0 ms ;
+		Cheddar_Properties::Preemptive_Scheduler => True;
+		Cheddar_Properties::Automaton_Name => "";
+		Cheddar_Properties::Source_Text => "";
+end cpu1.Impl;
+
+
+system Cheddar
+end Cheddar;
+
+system implementation Cheddar.Impl
+	subcomponents
+		instancied_cpu1 : processor cpu1.Impl;
+		instancied_ea : process ea.Impl;
+	properties
+		Actual_Processor_Binding => reference instancied_cpu1 applies to instancied_ea;
+end Cheddar.Impl;
+
+
+
